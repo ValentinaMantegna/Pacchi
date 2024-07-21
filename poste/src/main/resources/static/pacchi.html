@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pacchi</title>
+
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Elenco Pacchi</h1>
+
+<table id="pacchi-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Peso</th>
+        <th>Destinatario</th>
+        <th>Data Spedizione</th>
+    </tr>
+    </thead>
+    <tbody id="pacchi-list"></tbody>
+</table>
+
+<h2>Aggiungi un Pacco</h2>
+<form id="pacco-form">
+    <label for="id-input">ID:</label>
+    <input type="text" id="id-input" required>
+    <br>
+    <label for="peso-input">Peso:</label>
+    <input type="text" id="peso-input" required>
+    <br>
+    <label for="destinatario-input">Destinatario:</label>
+    <input type="text" id="destinatario-input" required>
+    <br>
+    <label for="dataSpedizione-input">Data Spedizione:</label>
+    <input type="text" id="dataSpedizione-input" required>
+    <br>
+    <button type="submit">Aggiungi</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pacchiList = document.getElementById("pacchi-list");
+        const form = document.getElementById("pacco-form");
+
+        function recuperaPacchi() {
+            fetch("/pacchi/TuttiPacchi")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    pacchiList.innerHTML = ""; //ogni volta che viene chiamata la funzione pulisce la lista
+                    data.forEach(pacco => {
+                        const row = document.createElement("tr");
+
+                        const cellId = document.createElement("td");
+                        cellId.textContent = pacco.id;
+                        row.appendChild(cellId);
+
+                        const cellPeso = document.createElement("td");
+                        cellPeso.textContent = pacco.peso;
+                        row.appendChild(cellPeso);
+
+                        const cellDestinatario = document.createElement("td");
+                        cellDestinatario.textContent = pacco.destinatario; // Assicurati che i nomi delle proprietà siano corretti
+                        row.appendChild(cellDestinatario);
+
+                        const cellDataSpedizione = document.createElement("td");
+                        cellDataSpedizione.textContent = pacco.dataSpedizione; // Assicurati che i nomi delle proprietà siano corretti
+                        row.appendChild(cellDataSpedizione);
+
+                        pacchiList.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Errore", error);
+                });
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const idInput = document.getElementById("id-input").value;
+            const pesoInput = document.getElementById("peso-input").value;
+            const destinatarioInput = document.getElementById("destinatario-input").value;
+            const dataSpedizioneInput = document.getElementById("dataSpedizione-input").value;
+
+            const newRow = document.createElement("tr");
+
+            const cellId = document.createElement("td");
+            cellId.textContent = idInput;
+            newRow.appendChild(cellId);
+
+            const cellPeso = document.createElement("td");
+            cellPeso.textContent = pesoInput; // Corretto il nome della variabile
+            newRow.appendChild(cellPeso);
+
+            const cellDestinatario = document.createElement("td");
+            cellDestinatario.textContent = destinatarioInput;
+            newRow.appendChild(cellDestinatario);
+
+            const cellDataSpedizione = document.createElement("td");
+            cellDataSpedizione.textContent = dataSpedizioneInput;
+            newRow.appendChild(cellDataSpedizione);
+
+            pacchiList.appendChild(newRow);
+
+            form.reset();
+        });
+
+        recuperaPacchi();
+    });
+</script>
+</body>
+</html>

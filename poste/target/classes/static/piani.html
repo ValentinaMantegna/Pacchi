@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Piani Tariffari</title>
+
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+<h1>Elenco Piani Tariffari</h1>
+
+<table id="piani-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nome Azienda</th>
+        <th>Nome Piano</th>
+        <th>Max Peso</th>
+        <th>Max Pacchi</th>
+        <th>Max Distanza</th>
+        <th>Prezzo</th>
+    </tr>
+    </thead>
+    <tbody id="piani-list"></tbody>
+</table>
+
+<h2>Aggiungi un Piano Tariffario</h2>
+<form id="piano-form">
+    <label for="id-input">ID:</label>
+    <input type="number" id="id-input" required>
+    <br>
+    <label for="nomeAzienda-input">Nome Azienda:</label>
+    <input type="text" id="nomeAzienda-input" required>
+    <br>
+    <label for="nomePiano-input">Nome Piano:</label>
+    <input type="text" id="nomePiano-input" required>
+    <br>
+    <label for="maxPeso-input">Max Peso:</label>
+    <input type="number" step="0.01" id="maxPeso-input" required>
+    <br>
+    <label for="maxPacchi-input">Max Pacchi:</label>
+    <input type="number" id="maxPacchi-input" required>
+    <br>
+    <label for="maxDistanza-input">Max Distanza:</label>
+    <input type="number" id="maxDistanza-input" required>
+    <br>
+    <label for="prezzo-input">Prezzo:</label>
+    <input type="number" step="0.01" id="prezzo-input" required>
+    <br>
+    <button type="submit">Aggiungi</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const pianiList = document.getElementById("piani-list");
+        const form = document.getElementById("piano-form");
+
+        function recuperaPiani() {
+            fetch("/piani/TuttiPiani")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    pianiList.innerHTML = ""; //ogni volta che viene chiamata la funzione pulisce la lista
+                    data.forEach(piano => {
+                        const row = document.createElement("tr");
+
+                        const cellId = document.createElement("td");
+                        cellId.textContent = piano.id;
+                        row.appendChild(cellId);
+
+                        const cellNomeAzienda = document.createElement("td");
+                        cellNomeAzienda.textContent = piano.nomeAzienda;
+                        row.appendChild(cellNomeAzienda);
+
+                        const cellNomePiano = document.createElement("td");
+                        cellNomePiano.textContent = piano.nomePiano;
+                        row.appendChild(cellNomePiano);
+
+                        const cellMaxPeso = document.createElement("td");
+                        cellMaxPeso.textContent = piano.maxPeso;
+                        row.appendChild(cellMaxPeso);
+
+                        const cellMaxPacchi = document.createElement("td");
+                        cellMaxPacchi.textContent = piano.maxPacchi;
+                        row.appendChild(cellMaxPacchi);
+
+                        const cellMaxDistanza = document.createElement("td");
+                        cellMaxDistanza.textContent = piano.maxDistanza;
+                        row.appendChild(cellMaxDistanza);
+
+                        const cellPrezzo = document.createElement("td");
+                        cellPrezzo.textContent = piano.prezzo;
+                        row.appendChild(cellPrezzo);
+
+                        pianiList.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Errore", error);
+                });
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const idInput = document.getElementById("id-input").value;
+            const nomeAziendaInput = document.getElementById("nomeAzienda-input").value;
+            const nomePianoInput = document.getElementById("nomePiano-input").value;
+            const maxPesoInput = document.getElementById("maxPeso-input").value;
+            const maxPacchiInput = document.getElementById("maxPacchi-input").value;
+            const maxDistanzaInput = document.getElementById("maxDistanza-input").value;
+            const prezzoInput = document.getElementById("prezzo-input").value;
+
+            const newRow = document.createElement("tr");
+
+            const cellId = document.createElement("td");
+            cellId.textContent = idInput;
+            newRow.appendChild(cellId);
+
+            const cellNomeAzienda = document.createElement("td");
+            cellNomeAzienda.textContent = nomeAziendaInput;
+            newRow.appendChild(cellNomeAzienda);
+
+            const cellNomePiano = document.createElement("td");
+            cellNomePiano.textContent = nomePianoInput;
+            newRow.appendChild(cellNomePiano);
+
+            const cellMaxPeso = document.createElement("td");
+            cellMaxPeso.textContent = maxPesoInput;
+            newRow.appendChild(cellMaxPeso);
+
+            const cellMaxPacchi = document.createElement("td");
+            cellMaxPacchi.textContent = maxPacchiInput;
+            newRow.appendChild(cellMaxPacchi);
+
+            const cellMaxDistanza = document.createElement("td");
+            cellMaxDistanza.textContent = maxDistanzaInput;
+            newRow.appendChild(cellMaxDistanza);
+
+            const cellPrezzo = document.createElement("td");
+            cellPrezzo.textContent = prezzoInput;
+            newRow.appendChild(cellPrezzo);
+
+            pianiList.appendChild(newRow);
+
+            form.reset();
+        });
+
+        recuperaPiani();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>destinazioni</title>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Elenco Destinazioni</h1>
+<table id="destinazioni-table">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Indirizzo</th>
+    </tr>
+    </thead>
+    <tbody id="destinazioni-list"></tbody>
+</table>
+
+<h2>Aggiungi una Destinazione</h2>
+<form id="destinazione-form">
+    <label for="id-input">ID:</label>
+    <input type="text" id="id-input" required>
+    <br>
+    <label for="nome-input">Nome:</label>
+    <input type="text" id="nome-input" required>
+    <br>
+    <label for="indirizzo-input">Indirizzo:</label>
+    <input type="text" id="indirizzo-input" required>
+    <br>
+    <button type="submit">Aggiungi</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const destinazioniList = document.getElementById("destinazioni-list");
+        const form = document.getElementById("destinazione-form");
+
+        function recuperaDestinazioni() {
+            fetch("/destinazioni/tutteDestinazioni")
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    destinazioniList.innerHTML = ""; //ogni volta che viene chiamata la funzione pulisce la lista
+                    data.forEach(destinazione => {
+                        const row = document.createElement("tr");
+
+                        const cellId = document.createElement("td");
+                        cellId.textContent = destinazione.id;
+                        row.appendChild(cellId);
+
+                        const cellNome = document.createElement("td");
+                        cellNome.textContent = destinazione.nome;
+                        row.appendChild(cellNome);
+
+                        const cellIndirizzo = document.createElement("td");
+                        cellIndirizzo.textContent = destinazione.indirizzo;
+                        row.appendChild(cellIndirizzo);
+
+                        destinazioniList.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error("Errore", error);
+                });
+        }
+
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const idInput = document.getElementById("id-input").value;
+            const nomeInput = document.getElementById("nome-input").value;
+            const indirizzoInput = document.getElementById("indirizzo-input").value;
+
+            const newRow = document.createElement("tr");
+
+            const cellId = document.createElement("td");
+            cellId.textContent = idInput;
+            newRow.appendChild(cellId);
+
+            const cellNome = document.createElement("td");
+            cellNome.textContent = nomeInput;
+            newRow.appendChild(cellNome);
+
+            const cellIndirizzo = document.createElement("td");
+            cellIndirizzo.textContent = indirizzoInput;
+            newRow.appendChild(cellIndirizzo);
+
+            destinazioniList.appendChild(newRow);
+
+            form.reset();
+        });
+
+        recuperaDestinazioni();
+    });
+</script>
+</body>
+</html>
